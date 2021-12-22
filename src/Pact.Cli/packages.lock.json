@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net6.0": {},
+    "net6.0/linux-arm64": {},
+    "net6.0/linux-musl-x64": {},
+    "net6.0/linux-x64": {},
+    "net6.0/osx-x64": {}
+  }
+}
