@@ -340,6 +340,22 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.CommandLine": {
+        "type": "Transitive",
+        "resolved": "2.0.0-beta2.21617.1",
+        "contentHash": "ZZqhoSu8ibW8zwAehKSQ1B3UMwZx6Dmt6oBbEMA8YD5EpyOm2ab7xQfzbN21Xi85KGJQkgeEf5wbsGHYE93cYQ==",
+        "dependencies": {
+          "system.memory": "4.5.4"
+        }
+      },
+      "System.CommandLine.NamingConventionBinder": {
+        "type": "Transitive",
+        "resolved": "2.0.0-beta2.21617.1",
+        "contentHash": "5cBvkPhW3W8h06539Z0aAxgjfVDim4RNk8ru2vySC5tQU35iYw2dHsJ7UsQemiQLAKbUaESC/9d3JoBk1pOV1A==",
+        "dependencies": {
+          "System.CommandLine": "2.0.0-beta2.21617.1"
+        }
+      },
       "System.Console": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -558,6 +574,11 @@
           "System.Runtime.Extensions": "4.3.0",
           "System.Threading": "4.3.0"
         }
+      },
+      "System.Memory": {
+        "type": "Transitive",
+        "resolved": "4.5.4",
+        "contentHash": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw=="
       },
       "System.Net.Http": {
         "type": "Transitive",
@@ -1092,6 +1113,13 @@
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "xunit.extensibility.core": "[2.4.1]"
+        }
+      },
+      "pact": {
+        "type": "Project",
+        "dependencies": {
+          "System.CommandLine": "2.0.0-beta2.21617.1",
+          "System.CommandLine.NamingConventionBinder": "2.0.0-beta2.21617.1"
         }
       }
     },

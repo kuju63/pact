@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Pact.Cli\Pact.Cli.csproj" />
+  </ItemGroup>
+
 </Project>
