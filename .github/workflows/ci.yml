@@ -33,7 +33,7 @@ jobs:
           dotnet tool restore
       - name: Restore nuget package
         run: |
-          dotnet restore -r linux-x64 --use-lock-file --locked-mode pact.sln
+          dotnet restore -r linux-x64 --use-lock-file pact.sln
       - name: Check source format
         run: |
           dotnet tool run dotnet-format pact.sln

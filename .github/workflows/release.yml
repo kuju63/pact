@@ -34,7 +34,7 @@ jobs:
           dotnet tool restore
       - name: Restore nuget package
         run: |
-          dotnet restore -r osx-x64 --use-lock-file --locked-mode src/Pact.Cli/Pact.Cli.csproj
+          dotnet restore -r osx-x64 --use-lock-file src/Pact.Cli/Pact.Cli.csproj
       - name: Publish
         env:
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os-runtime: [ "linux-x64", "linux-musl-x64" ]
+        os-runtime: [ "linux-x64", "linux-musl-x64", "linux-arm64" ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup dotnet
@@ -83,7 +83,7 @@ jobs:
         env:
           RID: ${{ matrix.os-runtime }}
         run: |
-          dotnet restore -r "$RID" --use-lock-file --locked-mode src/Pact.Cli/Pact.Cli.csproj
+          dotnet restore -r "$RID" --use-lock-file src/Pact.Cli/Pact.Cli.csproj
       - name: Publish
         env:
           RID: ${{ matrix.os-runtime }}
