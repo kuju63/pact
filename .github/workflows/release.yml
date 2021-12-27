@@ -10,14 +10,56 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  release:
+  release-macos:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - uses: battila7/get-version-action@v2
+        id: get_version
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-
+            ${{ runner.os }}-nuget-
+      - name: Install dotnet tool
+        run: |
+          dotnet tool restore
+      - name: Restore nuget package
+        run: |
+          dotnet restore -r osx-x64 --use-lock-file --locked-mode src/Pact.Cli/Pact.Cli.csproj
+      - name: Publish
+        env:
+          VERSION: ${{ steps.get_version.outputs.version-without-v }}
+        run: |
+          dotnet publish --no-restore -c Release /p:Version="$VERSION" -r osx-x64 -o publish --sc src/Pact.Cli/Pact.Cli.csproj
+      - name: Archive
+        working-directory: publish
+        env:
+          VERSION: ${{ steps.get_version.outputs.version-without-v }}
+        run: |
+          chmod +x pact
+          tar cvzf "../Pact.Cli.$VERSION.osx-x64.tar.gz" $(ls)
+
+  release-linux:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
       matrix:
-        os-runtime: [ "linux-x64", "linux-musl-x64", "linux-arm64", "osx-x64" ]
+        os-runtime: [ "linux-x64", "linux-musl-x64" ]
     steps:
       - uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
       # Get tag (need semver)
       - uses: battila7/get-version-action@v2
         id: get_version
@@ -54,5 +96,5 @@ jobs:
           RID: ${{ matrix.os-runtime }}
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
         run: |
-          chmod +x Pact.Cli
+          chmod +x pact
           tar cvzf "../Pact.Cli.$VERSION.$RID.tar.gz" $(ls)
