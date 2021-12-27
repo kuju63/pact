@@ -4,7 +4,7 @@ using Pact.Cli.Models;
 
 namespace Pact.Cli
 {
-    public class Program
+    public static class Program
     {
         public static async Task<int> Main(string[] args)
         {
