@@ -1,5 +1,6 @@
 using System.Dynamic;
 using Pact.Cli.Models.Workflows;
+using Pact.Cli.Utils;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -108,44 +109,62 @@ public class GitHubActionParser
 
         if (yaml.ContainsKey("branches"))
         {
-            eventInfo.Branches = ((List<object>)yaml["branches"]).Select((x) => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["branches"], out List<object> list))
+            {
+                eventInfo.Branches = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("tags"))
         {
-            eventInfo.Tags = ((List<object>)yaml["tags"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["tags"], out List<object> list))
+            {
+                eventInfo.Tags = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("paths"))
         {
-            eventInfo.Paths = ((List<object>)yaml["paths"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["paths"], out List<object> list))
+            {
+                eventInfo.Paths = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("branches-ignore"))
         {
-            eventInfo.BranchesIgnore = ((List<object>)yaml["branches-ignore"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["branches-ignore"], out List<object> list))
+            {
+                eventInfo.BranchesIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("tags-ignore"))
         {
-            eventInfo.TagsIgnore = ((List<object>)yaml["tags-ignore"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["tags-ignore"], out List<object> list))
+            {
+                eventInfo.TagsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("paths-ignore"))
         {
-            eventInfo.PathsIgnore = ((List<object>)yaml["paths-ignore"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["paths-ignore"], out List<object> list))
+            {
+                eventInfo.PathsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("types"))
         {
             var property = yaml["types"];
-            if (((Type)property.GetType()).GetInterface("System.Collections.Generics.IList") is not null)
+            if (DynamicUtil.Is<List<string>>(property, out List<string> listType))
             {
-                eventInfo.Types = ((List<object>)yaml["types"]).Select(x => (string)x).ToArray();
+                eventInfo.Types = listType.ToArray();
             }
-            else if (((Type)property.GetType()).Name == "String")
+            else if (DynamicUtil.Is<string>(property, out string type))
             {
-                eventInfo.Types = new string[] { property };
+                eventInfo.Types = new string[] { type };
             }
         }
 
@@ -162,32 +181,50 @@ public class GitHubActionParser
 
         if (yaml.ContainsKey("branches"))
         {
-            eventInfo.Branches = ((List<object>)yaml["branches"]).Select((x) => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["branches"], out List<object> list))
+            {
+                eventInfo.Branches = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("tags"))
         {
-            eventInfo.Tags = ((List<object>)yaml["tags"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["tags"], out List<object> list))
+            {
+                eventInfo.Tags = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("paths"))
         {
-            eventInfo.Paths = ((List<object>)yaml["paths"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["paths"], out List<object> list))
+            {
+                eventInfo.Paths = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("branches-ignore"))
         {
-            eventInfo.BranchesIgnore = ((List<object>)yaml["branches-ignore"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["branches-ignore"], out List<object> list))
+            {
+                eventInfo.BranchesIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("tags-ignore"))
         {
-            eventInfo.TagsIgnore = ((List<object>)yaml["tags-ignore"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["tags-ignore"], out List<object> list))
+            {
+                eventInfo.TagsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         if (yaml.ContainsKey("paths-ignore"))
         {
-            eventInfo.PathsIgnore = ((List<object>)yaml["paths-ignore"]).Select(x => (string)x).ToArray();
+            if (DynamicUtil.Is<List<object>>(yaml["paths-ignore"], out List<object> list))
+            {
+                eventInfo.PathsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
+            }
         }
 
         return eventInfo;
