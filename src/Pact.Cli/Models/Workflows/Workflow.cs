@@ -27,7 +27,7 @@ public class Workflow
     /// Get or set "on" property of object
     /// </summary>
     /// <value></value>
-    public Dictionary<string, object> OnEvent { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, TriggerEvent> OnEvent { get; set; } = new();
 
-    public Dictionary<string, object> Jobs { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Jobs { get; set; } = new();
 }

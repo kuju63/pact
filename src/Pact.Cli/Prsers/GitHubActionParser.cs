@@ -67,26 +67,26 @@ public partial class GitHubActionParser
 
     private static void SetOnEvent(dynamic on, Workflow workflow)
     {
-        if (((Type)on.GetType()).GetInterface("System.Collections.IDictionary") is not null)
+        if (DynamicUtil.Is<Dictionary<object, object>>(on, out Dictionary<object, object> eventMap))
         {
-            var events = new Dictionary<string, object>();
-            foreach (var kv in (Dictionary<object, object>)on)
+            var events = new Dictionary<string, TriggerEvent>();
+            foreach (var kv in eventMap)
             {
-                var eventName = (string)kv.Key;
-                if (IsSupportedTrigger(eventName))
+                if (kv.Key is string && IsSupportedTrigger((string)kv.Key))
                 {
-                    events.Add(eventName, GetTriggerEventInfo(eventName, kv.Value));
+                    events.Add((string)kv.Key, GetTriggerEventInfo((string)kv.Key, kv.Value));
                 }
             }
+
             workflow.OnEvent = events;
         }
-        else if (((Type)on.GetType()).GetInterface("System.Collections.IList") is not null)
+        else if (DynamicUtil.Is<List<object>>(on, out List<object> events))
         {
-            workflow.OnStringArray = ((IList<object>)on).Select(x => (string)x).Where(x => IsSupportedTrigger(x)).ToArray();
+            workflow.OnStringArray = events.Where(x => x is string && IsSupportedTrigger((string)x)).Select(x => (string)x).ToArray();
         }
-        else if (((Type)on.GetType()).Name == "String" && IsSupportedTrigger(on))
+        else if (DynamicUtil.Is<string>(on, out string eventName) && IsSupportedTrigger(eventName))
         {
-            workflow.OnString = on;
+            workflow.OnString = eventName;
         }
     }
 
@@ -97,79 +97,6 @@ public partial class GitHubActionParser
             "pull_request" => ParsePullRequestEvent(yaml),
             _ => throw new NotSupportedException($"{eventName} is not supported.")
         };
-
-    private static PullRequestTriggerEvent ParsePullRequestEvent(dynamic yaml)
-    {
-        var eventInfo = new PullRequestTriggerEvent();
-
-        if (yaml is null)
-        {
-            return eventInfo;
-        }
-
-        if (yaml.ContainsKey("branches"))
-        {
-            if (DynamicUtil.Is<List<object>>(yaml["branches"], out List<object> list))
-            {
-                eventInfo.Branches = list.Where(x => x is string).Select(x => (string)x).ToArray();
-            }
-        }
-
-        if (yaml.ContainsKey("tags"))
-        {
-            if (DynamicUtil.Is<List<object>>(yaml["tags"], out List<object> list))
-            {
-                eventInfo.Tags = list.Where(x => x is string).Select(x => (string)x).ToArray();
-            }
-        }
-
-        if (yaml.ContainsKey("paths"))
-        {
-            if (DynamicUtil.Is<List<object>>(yaml["paths"], out List<object> list))
-            {
-                eventInfo.Paths = list.Where(x => x is string).Select(x => (string)x).ToArray();
-            }
-        }
-
-        if (yaml.ContainsKey("branches-ignore"))
-        {
-            if (DynamicUtil.Is<List<object>>(yaml["branches-ignore"], out List<object> list))
-            {
-                eventInfo.BranchesIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
-            }
-        }
-
-        if (yaml.ContainsKey("tags-ignore"))
-        {
-            if (DynamicUtil.Is<List<object>>(yaml["tags-ignore"], out List<object> list))
-            {
-                eventInfo.TagsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
-            }
-        }
-
-        if (yaml.ContainsKey("paths-ignore"))
-        {
-            if (DynamicUtil.Is<List<object>>(yaml["paths-ignore"], out List<object> list))
-            {
-                eventInfo.PathsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
-            }
-        }
-
-        if (yaml.ContainsKey("types"))
-        {
-            var property = yaml["types"];
-            if (DynamicUtil.Is<List<string>>(property, out List<string> listType))
-            {
-                eventInfo.Types = listType.ToArray();
-            }
-            else if (DynamicUtil.Is<string>(property, out string type))
-            {
-                eventInfo.Types = new string[] { type };
-            }
-        }
-
-        return eventInfo;
-    }
 
     private static bool IsSupportedTrigger(string eventName) =>
         eventName switch
