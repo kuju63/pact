@@ -15,12 +15,28 @@ public class GitHubActionParserException : Exception
     public string? PropertyName { get; init; }
 
     /// <summary>
+    /// Initialize new instance of <see cref="GitHubActionsParserException"/> class.
+    /// </summary>
+    public GitHubActionParserException()
+    {
+    }
+
+    /// <summary>
+    /// Initialize new instance of <see cref="GitHubActionsParserException"/> class.
+    /// </summary>
+    /// <param name="propertyName">Parse failure property</param>
+    public GitHubActionParserException(string propertyName) : base($"Failed to parse workflow by {propertyName}.")
+    {
+        PropertyName = propertyName;
+    }
+
+    /// <summary>
     /// Initialize new instance of <see cref="GitHubActionParserException"/> class.
     /// </summary>
+    /// <param name="propertyName">Error property name</param>
     /// <param name="message">Error message</param>
     /// <param name="inner">Inner exception</param>
-    /// <param name="propertyName">Error property name</param>
-    public GitHubActionParserException(string? message = null, Exception? inner = null, string? propertyName = null) : base(message, inner)
+    public GitHubActionParserException(string propertyName, string message, Exception inner) : base(message, inner)
     {
         PropertyName = propertyName;
     }
@@ -34,7 +50,7 @@ public class GitHubActionParserException : Exception
     protected GitHubActionParserException(
         SerializationInfo info,
         StreamingContext context,
-        string? propertyName = null) : base(info, context)
+        string propertyName) : base(info, context)
     {
         PropertyName = propertyName;
     }
