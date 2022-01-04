@@ -75,7 +75,7 @@ public partial class GitHubActionParser
             }
             else if (DynamicUtil.Is<string>(property, out string type))
             {
-                eventInfo.Types = new string[] { type };
+                eventInfo.Types = new[] { type };
             }
         }
 

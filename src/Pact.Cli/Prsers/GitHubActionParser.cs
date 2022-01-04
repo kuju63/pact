@@ -16,7 +16,7 @@ public partial class GitHubActionParser
     /// <para><see cref="GitHubActionParser"/> can not create new instance from other class,
     /// because <see cref="GitHubActionParser"/> is util class.</para>
     /// </summary>
-    private GitHubActionParser()
+    protected GitHubActionParser()
     {
     }
 
@@ -57,10 +57,14 @@ public partial class GitHubActionParser
     private static bool HasProperty(dynamic obj, string name)
     {
         if (obj is null)
+        {
             return false;
+        }
 
         if (obj is ExpandoObject)
+        {
             return ((IDictionary<string, object>)obj).ContainsKey(name);
+        }
 
         return obj.GetType().GetProperty(name) != null;
     }
@@ -72,9 +76,9 @@ public partial class GitHubActionParser
             var events = new Dictionary<string, TriggerEvent>();
             foreach (var kv in eventMap)
             {
-                if (kv.Key is string && IsSupportedTrigger((string)kv.Key))
+                if (kv.Key is string eventName && IsSupportedTrigger(eventName))
                 {
-                    events.Add((string)kv.Key, GetTriggerEventInfo((string)kv.Key, kv.Value));
+                    events.Add(eventName, GetTriggerEventInfo(eventName, kv.Value));
                 }
             }
 
