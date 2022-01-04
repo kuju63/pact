@@ -24,48 +24,54 @@ public partial class GitHubActionParser
 
         if (yaml.ContainsKey("branches"))
         {
-            if (DynamicUtil.Is<List<object>>(yaml["branches"], out List<object> list))
+            if (DynamicUtil.Is<List<object>>(yaml["branches"]))
             {
+                List<object> list = DynamicUtil.CastTo<List<object>>(yaml["branches"]);
                 eventInfo.Branches = list.Where(x => x is string).Select(x => (string)x).ToArray();
             }
         }
 
         if (yaml.ContainsKey("tags"))
         {
-            if (DynamicUtil.Is<List<object>>(yaml["tags"], out List<object> list))
+            if (DynamicUtil.Is<List<object>>(yaml["tags"]))
             {
+                List<object> list = DynamicUtil.CastTo<List<object>>(yaml["tags"]);
                 eventInfo.Tags = list.Where(x => x is string).Select(x => (string)x).ToArray();
             }
         }
 
         if (yaml.ContainsKey("paths"))
         {
-            if (DynamicUtil.Is<List<object>>(yaml["paths"], out List<object> list))
+            if (DynamicUtil.Is<List<object>>(yaml["paths"]))
             {
+                List<object> list = DynamicUtil.CastTo<List<object>>(yaml["paths"]);
                 eventInfo.Paths = list.Where(x => x is string).Select(x => (string)x).ToArray();
             }
         }
 
         if (yaml.ContainsKey("branches-ignore"))
         {
-            if (DynamicUtil.Is<List<object>>(yaml["branches-ignore"], out List<object> list))
+            if (DynamicUtil.Is<List<object>>(yaml["branches-ignore"]))
             {
+                List<object> list = DynamicUtil.CastTo<List<object>>(yaml["branches-ignore"]);
                 eventInfo.BranchesIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
             }
         }
 
         if (yaml.ContainsKey("tags-ignore"))
         {
-            if (DynamicUtil.Is<List<object>>(yaml["tags-ignore"], out List<object> list))
+            if (DynamicUtil.Is<List<object>>(yaml["tags-ignore"]))
             {
+                List<object> list = DynamicUtil.CastTo<List<object>>(yaml["tags-ignore"]);
                 eventInfo.TagsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
             }
         }
 
         if (yaml.ContainsKey("paths-ignore"))
         {
-            if (DynamicUtil.Is<List<object>>(yaml["paths-ignore"], out List<object> list))
+            if (DynamicUtil.Is<List<object>>(yaml["paths-ignore"]))
             {
+                List<object> list = DynamicUtil.CastTo<List<object>>(yaml["paths-ignore"]);
                 eventInfo.PathsIgnore = list.Where(x => x is string).Select(x => (string)x).ToArray();
             }
         }

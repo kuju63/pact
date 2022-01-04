@@ -71,8 +71,9 @@ public partial class GitHubActionParser
 
     private static void SetOnEvent(dynamic on, Workflow workflow)
     {
-        if (DynamicUtil.Is<Dictionary<object, object>>(on, out Dictionary<object, object> eventMap))
+        if (DynamicUtil.Is<Dictionary<object, object>>(on))
         {
+            var eventMap = DynamicUtil.CastTo<Dictionary<object, object>>(on);
             var events = new Dictionary<string, TriggerEvent>();
             foreach (var kv in eventMap)
             {
@@ -84,13 +85,18 @@ public partial class GitHubActionParser
 
             workflow.OnEvent = events;
         }
-        else if (DynamicUtil.Is<List<object>>(on, out List<object> events))
+        else if (DynamicUtil.Is<List<object>>(on))
         {
+            List<object> events = DynamicUtil.CastTo<List<object>>(on);
             workflow.OnStringArray = events.Where(x => x is string && IsSupportedTrigger((string)x)).Select(x => (string)x).ToArray();
         }
-        else if (DynamicUtil.Is<string>(on, out string eventName) && IsSupportedTrigger(eventName))
+        else if (DynamicUtil.Is<string>(on))
         {
-            workflow.OnString = eventName;
+            var eventName = DynamicUtil.CastTo<string>(on);
+            if (IsSupportedTrigger(eventName))
+            {
+                workflow.OnString = eventName;
+            }
         }
     }
 
