@@ -1115,11 +1115,17 @@
           "xunit.extensibility.core": "[2.4.1]"
         }
       },
+      "YamlDotNet": {
+        "type": "Transitive",
+        "resolved": "11.2.1",
+        "contentHash": "tBt8K+korVfrjH9wyDEhiLKxbs8qoLCLIFwvYgkSUuMC9//w3z0cFQ8LQAI/5MCKq+BMil0cfRTRvPeE7eXhQw=="
+      },
       "pact": {
         "type": "Project",
         "dependencies": {
           "System.CommandLine": "2.0.0-beta2.21617.1",
-          "System.CommandLine.NamingConventionBinder": "2.0.0-beta2.21617.1"
+          "System.CommandLine.NamingConventionBinder": "2.0.0-beta2.21617.1",
+          "YamlDotNet": "11.2.1"
         }
       }
     },
