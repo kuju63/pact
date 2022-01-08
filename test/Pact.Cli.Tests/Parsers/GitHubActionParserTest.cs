@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       JOB_SAMPLE_ENV1: sample3
-      JOB_SAMPLE_ENV2: sample4
+      JOB_SAMPLE_ENV2: 1
     defaults:
       run:
         shell: bash
@@ -90,9 +90,12 @@ jobs:
         run: |
           echo $STEP_SAMPLE_ENV1
   archive:
-    - name: sample
-      run: |
-        echo ${{ github.event_name }}
+    runs-on: [self-hosted, linux, gpu]
+    needs: [build]
+    steps:
+      - name: sample
+        run: |
+          echo ${{ github.event_name }}
 ";
 
     [Theory]
@@ -235,5 +238,79 @@ jobs:
                     x => Assert.Equal("synchronize", x),
                     x => Assert.Equal("reopened", x));
             });
+        Assert.Collection(
+            actual.Jobs,
+            (kv) =>
+            {
+                Assert.Equal("build", kv.Key);
+                Assert.Equal("sample job1", kv.Value.Name);
+                Assert.Equal("ubuntu-18.04", kv.Value.RunsOn);
+                Assert.Null(kv.Value.RunsOnArray);
+                Assert.Null(kv.Value.Needs);
+                Assert.Collection(
+                    kv.Value.Env,
+                    kv2 =>
+                    {
+                        Assert.Equal("JOB_SAMPLE_ENV1", kv2.Key);
+                        Assert.Equal("sample3", kv2.Value);
+                    },
+                    kv2 =>
+                    {
+                        Assert.Equal("JOB_SAMPLE_ENV2", kv2.Key);
+                        Assert.Equal("1", kv2.Value);
+                    });
+                Assert.Collection(
+                    kv.Value.Steps,
+                    step =>
+                    {
+                        Assert.Equal("checkout", step.Name);
+                        Assert.Equal("checkout", step.Id);
+                        Assert.Equal("actions/checkout@v2", step.Uses);
+                        Assert.Collection(
+                            step.With,
+                            with =>
+                            {
+                                Assert.Equal("fetch-depth", with.Key);
+                                Assert.Equal("1", with.Value);
+                            });
+                    },
+                    step =>
+                    {
+                        Assert.Equal("run echo", step.Name);
+                        Assert.Equal("echo", step.Id);
+                        Assert.Equal("step/sample", step.WorkingDirectory);
+                        Assert.Equal(Shell.Bash, step.Shell);
+                        Assert.Collection(
+                            step.Env,
+                            env =>
+                            {
+                                Assert.Equal("STEP_SAMPLE_ENV1", env.Key);
+                                Assert.Equal("sample5", env.Value);
+                            });
+                        Assert.Equal("echo $STEP_SAMPLE_ENV1\n", step.Run);
+                    }
+                );
+            },
+            (kv) =>
+            {
+                Assert.Equal("archive", kv.Key);
+                Assert.Null(kv.Value.Name);
+                Assert.Collection(
+                    kv.Value.RunsOnArray,
+                    x => Assert.Equal("self-hosted", x),
+                    x => Assert.Equal("linux", x),
+                    x => Assert.Equal("gpu", x));
+                Assert.Collection(
+                    kv.Value.Needs,
+                    x => Assert.Equal("build", x));
+                Assert.Collection(
+                    kv.Value.Steps,
+                    step =>
+                    {
+                        Assert.Equal("sample", step.Name);
+                        Assert.Equal("echo ${{ github.event_name }}\n", step.Run);
+                    });
+            }
+        );
     }
 }

@@ -29,5 +29,9 @@ public class Workflow
     /// <value></value>
     public Dictionary<string, TriggerEvent> OnEvent { get; set; } = new();
 
-    public Dictionary<string, object> Jobs { get; set; } = new();
+    /// <summary>
+    /// Get and set "jobs" property
+    /// </summary>
+    /// <value>Map of jobs</value>
+    public Dictionary<string, Job> Jobs { get; set; } = new();
 }
