@@ -18,7 +18,7 @@ public class Step
     /// Get or set name for displaying step
     /// </summary>
     /// <value>Display name</value>
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Get or set action.

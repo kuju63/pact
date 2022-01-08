@@ -232,6 +232,9 @@ public partial class GitHubActionParser
                                                                                 }
                                                                                 break;
                                                                             }
+                                                                        default:
+                                                                            Console.WriteLine($"Does not support property({keyName})");
+                                                                            break;
                                                                     }
                                                                 }
                                                             }
