@@ -312,5 +312,17 @@ jobs:
                     });
             }
         );
+        Assert.Collection(
+            actual.Env,
+            (kv) =>
+            {
+                Assert.Equal("SAMPLE_ENV1", kv.Key);
+                Assert.Equal("sample1", kv.Value);
+            },
+            (kv) =>
+            {
+                Assert.Equal("SAMPLE_ENV2", kv.Key);
+                Assert.Equal("sample2", kv.Value);
+            });
     }
 }
