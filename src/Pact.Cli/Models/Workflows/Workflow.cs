@@ -30,6 +30,12 @@ public class Workflow
     public Dictionary<string, TriggerEvent> OnEvent { get; set; } = new();
 
     /// <summary>
+    /// Get or set a map of environment variables to all jobs and steps.
+    /// </summary>
+    /// <value>Map of environment variables</value>
+    public Dictionary<string, string>? Env { get; set; }
+
+    /// <summary>
     /// Get and set "jobs" property
     /// </summary>
     /// <value>Map of jobs</value>
