@@ -49,6 +49,17 @@ public partial class GitHubActionParser
             workflowResult.Name = workflowYaml.name;
         }
 
+        if (HasProperty(workflowYaml, "env"))
+        {
+            if (DynamicUtil.Is<Dictionary<object, object>>(workflowYaml.env))
+            {
+                Dictionary<object, object>? env = DynamicUtil.CastTo<Dictionary<object, object>>(workflowYaml.env);
+                workflowResult.Env = env?.Where(kv => kv.Key is string && kv.Value is string)
+                                         .Select(kv => ((string)kv.Key, (string)kv.Value))
+                                         .ToDictionary(t => t.Item1, t => t.Item2);
+            }
+        }
+
         SetOnEvent(workflowYaml.on, workflowResult);
 
         SetJobs(workflowYaml.jobs, workflowResult);
