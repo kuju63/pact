@@ -39,7 +39,7 @@ jobs:
         env:
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
         run: |
-          dotnet publish --no-restore -c Release /p:Version="$VERSION" -r osx-x64 -o publish --sc src/Pact.Cli/Pact.Cli.csproj
+          dotnet publish --no-restore -c Release -p:Version="$VERSION" -p:DefineConstants="OSX=1" -r osx-x64 -o publish --sc src/Pact.Cli/Pact.Cli.csproj
       - name: Archive
         working-directory: publish
         env:
@@ -89,7 +89,7 @@ jobs:
           RID: ${{ matrix.os-runtime }}
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
         run: |
-          dotnet publish --no-restore -c Release /p:Version="$VERSION" -r "$RID" -o publish --sc src/Pact.Cli/Pact.Cli.csproj
+          dotnet publish --no-restore -c Release -p:Version="$VERSION" -p:DefineConstants="LINUX=1"  -r "$RID" -o publish --sc src/Pact.Cli/Pact.Cli.csproj
       - name: Archive
         working-directory: publish
         env:

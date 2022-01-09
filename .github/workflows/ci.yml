@@ -39,7 +39,40 @@ jobs:
           dotnet tool run dotnet-format pact.sln
       - name: Build pact
         run: |
-          dotnet build --no-restore pact.sln
+          dotnet build -p:DefineConstants="LINUX=1"  --no-restore pact.sln
+      - name: Test
+        run: |
+          dotnet test --no-restore --no-build pact.sln
+
+  build-osx:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-
+            ${{ runner.os }}-nuget-
+      - name: Install dotnet tool
+        run: |
+          dotnet tool restore
+      - name: Restore nuget package
+        run: |
+          dotnet restore --use-lock-file --locked-mode pact.sln
+      - name: Check source format
+        run: |
+          dotnet tool run dotnet-format pact.sln
+      - name: Build pact
+        run: |
+          dotnet build -p:DefineConstants="OSX=1" --no-restore pact.sln
       - name: Test
         run: |
           dotnet test --no-restore --no-build pact.sln
