@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-nuget-6.0.x-
       - name: Restore nuget package
         run: |
-          dotnet restore src/Pact.Cli/Pact.Cli.osx-x64.csproj
+          dotnet restore -r osx-x64 src/Pact.Cli/Pact.Cli.osx-x64.csproj
       - name: Publish
         env:
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
@@ -75,7 +75,7 @@ jobs:
             ${{ runner.os }}-nuget-6.0.x-
       - name: Restore nuget package
         run: |
-          dotnet restore src/Pact.Cli/Pact.Cli.${{ matrix.os-runtime }}.csproj
+          dotnet restore -r ${{ matrix.os-runtime }} src/Pact.Cli/Pact.Cli.${{ matrix.os-runtime }}.csproj
       - name: Publish
         env:
           RID: ${{ matrix.os-runtime }}
