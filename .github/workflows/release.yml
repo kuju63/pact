@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-nuget-6.0.x-
       - name: Restore nuget package
         run: |
-          dotnet restore --use-lock-file src/Pact.Cli/Pact.Cli.osx-x64.csproj
+          dotnet restore src/Pact.Cli/Pact.Cli.osx-x64.csproj
       - name: Publish
         env:
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
@@ -68,14 +68,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.os-runtime }}-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-6.0.x-${{ matrix.os-runtime }}-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.os-runtime }}-${{ hashFiles('**/packages.lock.json') }}
-            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.os-runtime }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.os-runtime }}-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.os-runtime }}
             ${{ runner.os }}-nuget-6.0.x-
       - name: Restore nuget package
         run: |
-          dotnet restore --use-lock-file src/Pact.Cli/Pact.Cli.${{ strategy.matrix.os-runtime }}.csproj
+          dotnet restore src/Pact.Cli/Pact.Cli.${{ matrix.os-runtime }}.csproj
       - name: Publish
         env:
           RID: ${{ matrix.os-runtime }}

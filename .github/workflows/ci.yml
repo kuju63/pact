@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        PLATFORM: [ "linux-x64", "osx-x64" ]
+        runtime: [ "linux-x64", "osx-x64" ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup dotnet
@@ -30,22 +30,22 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.PLATFORM }}-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.PLATFORM }}-${{ hashFiles('**/packages.lock.json') }}
-            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.PLATFORM }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}
             ${{ runner.os }}-nuget-6.0.x
       - name: Restore nuget package
         run: |
-          dotnet restore --use-lock-file --locked-mode pact.sln
+          dotnet restore pact.sln
       - name: Check source format
         working-directory: src/Pact.Cli
         run: |
-          dotnet tool run dotnet-format -- --no-restore --check Pact.Cli.${{ strategy.matrix.PLATFORM }}.csproj
+          dotnet tool run dotnet-format -- --no-restore --check Pact.Cli.${{ matrix.runtime }}.csproj
       - name: Check test format
         working-directory: test/Pact.Cli.Tests
         run: |
-          dotnet tool run dotnet-format -- --no-restore --check Pact.Cli.Tests.${{ strategy.matrix.PLATFORM }}.csproj
+          dotnet tool run dotnet-format -- --no-restore --check Pact.Cli.Tests.${{ matrix.runtime }}.csproj
 
   build:
     runs-on: ubuntu-20.04
@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        PLATFORM: [ "linux-x64", "osx-x64" ]
+        runtime: [ "linux-x64", "osx-x64" ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup dotnet
@@ -67,22 +67,21 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.PLATFORM }}-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.PLATFORM }}-${{ hashFiles('**/packages.lock.json') }}
-            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.PLATFORM }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}
             ${{ runner.os }}-nuget-6.0.x
       - name: Install dotnet tool
         run: |
           dotnet tool restore
       - name: Restore nuget package
         run: |
-          dotnet restore --use-lock-file --locked-mode pact.sln
+          dotnet restore pact.sln
       - name: Build pact
         run: |
-          dotnet build --no-restore src/Pact.Cli/Pact.Cli.${{ strategy.matrix.PLATFORM }}.csproj
-          dotnet build --no-restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ strategy.matrix.PLATFORM }}.csproj
+          dotnet build --no-restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
       - name: Test
         working-directory: test/Pact.Cli.Tests
         run: |
-          dotnet test --no-restore --no-build Pact.Cli.Tests.${{ strategy.matrix.PLATFORM }}.csproj
+          dotnet test --no-restore --no-build Pact.Cli.Tests.${{ matrix.runtime }}.csproj
