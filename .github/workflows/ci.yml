@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-nuget-6.0.x
       - name: Restore nuget package
         run: |
-          dotnet restore pact.sln
+          dotnet restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
       - name: Check source format
         working-directory: src/Pact.Cli
         run: |
@@ -77,7 +77,7 @@ jobs:
           dotnet tool restore
       - name: Restore nuget package
         run: |
-          dotnet restore -r ${{ matrix.runtime }} pact.sln
+          dotnet restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
       - name: Build pact
         run: |
           dotnet build --no-restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
