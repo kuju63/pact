@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="Pact.Cli.Tests.Common.targets"/>
+  <PropertyGroup>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Pact.Cli\Pact.Cli.mac.csproj" />
+  </ItemGroup>
+</Project>

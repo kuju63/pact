@@ -24,22 +24,19 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-6.0.x-osx-x64-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-osx-x64-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-osx-x64-
             ${{ runner.os }}-nuget-6.0.x-
-            ${{ runner.os }}-nuget-
-      - name: Install dotnet tool
-        run: |
-          dotnet tool restore
       - name: Restore nuget package
         run: |
-          dotnet restore -r osx-x64 --use-lock-file src/Pact.Cli/Pact.Cli.csproj
+          dotnet restore --use-lock-file src/Pact.Cli/Pact.Cli.osx-x64.csproj
       - name: Publish
         env:
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
         run: |
-          dotnet publish --no-restore -c Release -p:Version="$VERSION" -p:DefineConstants="OSX=1" -r osx-x64 -o publish --sc src/Pact.Cli/Pact.Cli.csproj
+          dotnet publish --no-restore -c Release -p:Version="$VERSION" -o publish --sc src/Pact.Cli/Pact.Cli.csproj
       - name: Archive
         working-directory: publish
         env:
@@ -53,7 +50,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os-runtime: [ "linux-x64", "linux-musl-x64", "linux-arm64" ]
+        os-runtime: [ "linux-x64" ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup dotnet
@@ -71,25 +68,20 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.os-runtime }}-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.os-runtime }}-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ strategy.matrix.os-runtime }}
             ${{ runner.os }}-nuget-6.0.x-
-            ${{ runner.os }}-nuget-
-      - name: Install dotnet tool
-        run: |
-          dotnet tool restore
       - name: Restore nuget package
-        env:
-          RID: ${{ matrix.os-runtime }}
         run: |
-          dotnet restore -r "$RID" --use-lock-file src/Pact.Cli/Pact.Cli.csproj
+          dotnet restore --use-lock-file src/Pact.Cli/Pact.Cli.${{ strategy.matrix.os-runtime }}.csproj
       - name: Publish
         env:
           RID: ${{ matrix.os-runtime }}
           VERSION: ${{ steps.get_version.outputs.version-without-v }}
         run: |
-          dotnet publish --no-restore -c Release -p:Version="$VERSION" -p:DefineConstants="LINUX=1"  -r "$RID" -o publish --sc src/Pact.Cli/Pact.Cli.csproj
+          dotnet publish --no-restore -c Release -p:Version="$VERSION" -o publish --sc src/Pact.Cli/Pact.Cli.${{ strategy.matrix.os-runtime }}.csproj
       - name: Archive
         working-directory: publish
         env:
