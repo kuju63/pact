@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Pact.Cli\Pact.Cli.mac.csproj" />
+    <ProjectReference Include="..\..\src\Pact.Cli\Pact.Cli.osx-x64.csproj" />
   </ItemGroup>
 </Project>
