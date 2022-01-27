@@ -4,6 +4,6 @@
 
   <PropertyGroup>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-    <DefinitionConstrants>LINUX</DefinitionConstrants>
+    <DefineConstants>LINUX</DefineConstants>
   </PropertyGroup>
 </Project>
