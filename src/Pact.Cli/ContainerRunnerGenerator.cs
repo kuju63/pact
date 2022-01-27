@@ -22,6 +22,11 @@ public class ContainerRunnerGenerator
             throw new InvalidOperationException("Podman is not installed. Required podman.");
         }
 
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
 #if OSX
         var isStart = await StartVMAsync();
         if (isStart)
