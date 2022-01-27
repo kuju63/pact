@@ -1,11 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifiers>linux-x64;linux-musl-x64;linux-arm64;osx-x64</RuntimeIdentifiers>
     <AssemblyName>pact</AssemblyName>
   </PropertyGroup>
 
@@ -22,5 +21,4 @@
     <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta2.21617.1" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
-
 </Project>

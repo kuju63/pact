@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="PactRuntime.targets" />
+
+  <PropertyGroup>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <DefineConstants>OSX</DefineConstants>
+  </PropertyGroup>
+</Project>

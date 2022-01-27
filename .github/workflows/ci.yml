@@ -11,68 +11,77 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+  pre-check:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: true
+      matrix:
+        runtime: [ "linux-x64", "osx-x64" ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Install dotnet tool
+        run: |
+          dotnet tool restore
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}
+            ${{ runner.os }}-nuget-6.0.x
+      - name: Restore nuget package
+        run: |
+          dotnet restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
+      - name: Check source format
+        working-directory: src/Pact.Cli
+        run: |
+          dotnet tool run dotnet-format -- --no-restore --check Pact.Cli.${{ matrix.runtime }}.csproj
+      - name: Check test format
+        working-directory: test/Pact.Cli.Tests
+        run: |
+          dotnet tool run dotnet-format -- --no-restore --check Pact.Cli.Tests.${{ matrix.runtime }}.csproj
+
   build:
     runs-on: ubuntu-20.04
+    needs: [ "pre-check" ]
+    strategy:
+      fail-fast: true
+      matrix:
+        runtime: [ "linux-x64", "osx-x64" ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
+      - name: Install dotnet tool
+        run: |
+          dotnet tool restore
       - name: Restore cache
         uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
-            ${{ runner.os }}-nuget-6.0.x-
-            ${{ runner.os }}-nuget-
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-nuget-6.0.x-${{ matrix.runtime }}
+            ${{ runner.os }}-nuget-6.0.x
       - name: Install dotnet tool
         run: |
           dotnet tool restore
       - name: Restore nuget package
         run: |
-          dotnet restore --use-lock-file --locked-mode pact.sln
-      - name: Check source format
-        run: |
-          dotnet tool run dotnet-format pact.sln
+          dotnet restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
       - name: Build pact
         run: |
-          dotnet build -p:DefineConstants="LINUX=1"  --no-restore pact.sln
+          dotnet build --no-restore test/Pact.Cli.Tests/Pact.Cli.Tests.${{ matrix.runtime }}.csproj
       - name: Test
+        working-directory: test/Pact.Cli.Tests
         run: |
-          dotnet test --no-restore --no-build pact.sln
-
-  build-osx:
-    runs-on: macos-11
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-      - name: Restore cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-6.0.x-${{ hashFiles('**/packages.lock.json') }}
-            ${{ runner.os }}-nuget-6.0.x-
-            ${{ runner.os }}-nuget-
-      - name: Install dotnet tool
-        run: |
-          dotnet tool restore
-      - name: Restore nuget package
-        run: |
-          dotnet restore --use-lock-file --locked-mode pact.sln
-      - name: Check source format
-        run: |
-          dotnet tool run dotnet-format pact.sln
-      - name: Build pact
-        run: |
-          dotnet build -p:DefineConstants="OSX=1" --no-restore pact.sln
-      - name: Test
-        run: |
-          dotnet test --no-restore --no-build pact.sln
+          dotnet test --no-restore --no-build Pact.Cli.Tests.${{ matrix.runtime }}.csproj

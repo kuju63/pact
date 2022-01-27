@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="Pact.Cli.Tests.Common.targets"/>
+
+  <PropertyGroup>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Pact.Cli\Pact.Cli.linux-x64.csproj" />
+  </ItemGroup>
+
+</Project>
