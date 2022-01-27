@@ -52,7 +52,7 @@ public class ContainerRunnerGenerator
     {
         using (var podman = new Process())
         {
-            podman.OutputDataReceived += (o, data) => { Console.WriteLine(data.Data); };
+            podman.OutputDataReceived += (_, data) => { Console.WriteLine(data.Data); };
             podman.StartInfo = new ProcessStartInfo("podman", $"image exists {_imageName}");
 
             if (podman.Start())
@@ -72,7 +72,7 @@ public class ContainerRunnerGenerator
     {
         using (var podman = new Process())
         {
-            podman.OutputDataReceived += (o, data) => { Console.WriteLine(data.Data); };
+            podman.OutputDataReceived += (_, data) => { Console.WriteLine(data.Data); };
             podman.StartInfo = new ProcessStartInfo("podman", $"pull {_imageName}");
 
             if (podman.Start())
@@ -92,7 +92,7 @@ public class ContainerRunnerGenerator
     {
         using (var podman = new Process())
         {
-            podman.OutputDataReceived += (o, data) => { Console.WriteLine(data.Data); };
+            podman.OutputDataReceived += (_, data) => { Console.WriteLine(data.Data); };
             podman.StartInfo = new ProcessStartInfo("podman");
             podman.StartInfo.ArgumentList.Add("run");
             podman.StartInfo.ArgumentList.Add("-d");
@@ -116,7 +116,7 @@ public class ContainerRunnerGenerator
             podman.StartInfo = new ProcessStartInfo("podman", "system connection list");
             if (podman.Start())
             {
-                podman.OutputDataReceived += (o, data) => { Console.WriteLine(data.Data); };
+                podman.OutputDataReceived += (_, data) => { Console.WriteLine(data.Data); };
                 await podman.WaitForExitAsync(cancellationToken);
                 string? output;
                 while ((output = (await podman.StandardOutput.ReadLineAsync())) is not null)
@@ -134,7 +134,7 @@ public class ContainerRunnerGenerator
         {
             using (var podman = new Process())
             {
-                podman.OutputDataReceived += (o, data) => { Console.WriteLine(data.Data); };
+                podman.OutputDataReceived += (_, data) => { Console.WriteLine(data.Data); };
                 podman.StartInfo = new ProcessStartInfo("podman", "machine init");
                 if (podman.Start())
                 {
@@ -164,7 +164,7 @@ public class ContainerRunnerGenerator
         {
             using (var podman = new Process())
             {
-                podman.OutputDataReceived += (o, data) => { Console.WriteLine(data.Data); };
+                podman.OutputDataReceived += (_, data) => { Console.WriteLine(data.Data); };
                 podman.StartInfo = new ProcessStartInfo("podman", "machine start");
                 if (podman.Start())
                 {
